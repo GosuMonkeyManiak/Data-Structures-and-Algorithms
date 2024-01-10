@@ -1,6 +1,31 @@
+#include <stdio.h>
 #include <math.h>
-#include "euclidean.h"
 
+int gcd_subtract(int a, int b);
+int gcd_division(int a, int b);
+static int gcd_division_recursion(int a, int b);
+
+void main()
+{
+    int a, b;
+
+    printf("Enter a: ");
+    scanf("%d", &a);
+
+    printf("Enter b: ");
+    scanf("%d", &b);
+
+    int gcdSubtract = gcd_subtract(a, b);
+    int gcdDivision = gcd_division(a, b);
+    int gcdRecursion = gcd_division_recursion(a, b);
+
+    printf("Subtract: gcd(%d, %d) = %d\n", a, b, gcdSubtract);
+    printf("Devision: gcd(%d, %d) = %d\n", a, b, gcdDivision);
+    printf("Recursion: gcd(%d, %d) = %d\n", a, b, gcdRecursion);
+
+    printf("Fraction %d/%d is reduced to %d/%d\n", a, b, a / gcdDivision, b / gcdDivision);
+    printf("lcm(%d, %d) = %d", a, b, a * b / gcdDivision);
+}
 
 int gcd_subtract(int a, int b)
 {
