@@ -1,18 +1,23 @@
 #include "linkedList.h"
+#include <stdlib.h>
 
-#define NULL 0
+static void* (*nextElementFunc)(void *currentElement);
+static void (*setPointerFieldFunc)(void *currentElement, void *newElement);
+static int (*deleteConditionFunc)(void *currentElement, void *data);
+static void (*printFunc)(void *currentElement);
 
-static void* (*next)(void *currentElement);
-static void (*setPointerField)(void *currentElement, void *newElement);
-
-void config(void * (*nextElementFunc)(void *currentElement),
-            void (*setPointerFieldFunc)(void *currentElement, void *newElement))
+void config(void * (*_nextElementFunc)(void *currentElement),
+            void (*_setPointerFieldFunc)(void *currentElement, void *newElement),
+            int (*_deleteConditionFunc)(void *currentElement, void *data),
+            void (*_printFunc)(void *currentElement))
 {
-    next = nextElementFunc;
-    setPointerField = setPointerFieldFunc;
+    nextElementFunc = _nextElementFunc;
+    setPointerFieldFunc = _setPointerFieldFunc;
+    deleteConditionFunc = _deleteConditionFunc;
+    printFunc = _printFunc;
 }
 
-void addLast(void **head, void *newElement)
+void addToList(void **head, void *newElement)
 {
     if (*head == NULL)
     {
@@ -26,8 +31,52 @@ void addLast(void **head, void *newElement)
     while (current != NULL)
     {
         prev = current;
-        current = (*next)(current);
+        current = (*nextElementFunc)(current);
     }
     
-    (*setPointerField)(prev, newElement);
+    (*setPointerFieldFunc)(prev, newElement);
+}
+
+int deleteFromList(void **head, void *data)
+{
+    if (*head == NULL)
+    {
+        return 0;
+    }
+
+    void *current = *head;
+    void *prev = *head;
+
+    while (current != NULL)
+    {
+        if ((*deleteConditionFunc)(current, data))
+        {
+            if (current == prev)
+            {
+                *head = (*nextElementFunc)(current);
+                free(current);
+            }
+            else
+            {
+                (*setPointerFieldFunc)(prev, (*nextElementFunc)(current));
+                free(current);
+            }
+            
+            return 1;
+        }
+
+        prev = current;
+        current = (*nextElementFunc)(current);
+    }
+
+    return 0;
+}
+
+void printList(void *head)
+{
+    while (head != NULL)
+    {
+        (*printFunc)(head);
+        head = (*nextElementFunc)(head);
+    }
 }
