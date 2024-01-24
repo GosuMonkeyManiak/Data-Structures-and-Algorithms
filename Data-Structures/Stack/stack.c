@@ -1,5 +1,7 @@
 #include "../Linked-List/linkedList.h"
 
+#include "stack.h"
+
 #define NULL ((void *)0)
 
 void configStack(void * (*_prevElementFunc)(void *currentElement), void (*_setPointerFieldFunc)(void *currentElement, void *newElement))
