@@ -1,7 +1,9 @@
 #include "linkedList.h"
 #include <stdlib.h>
 
-static void* (*nextElementFunc)(void *currentElement);
+static int isListEmpty(void *head);
+
+static void * (*nextElementFunc)(void *currentElement);
 static void (*setPointerFieldFunc)(void *currentElement, void *newElement);
 static int (*deleteConditionFunc)(void *currentElement, void *data);
 static void (*printFunc)(void *currentElement);
@@ -17,9 +19,22 @@ void config(void * (*_nextElementFunc)(void *currentElement),
     printFunc = _printFunc;
 }
 
-void addToList(void **head, void *newElement)
+void addFirst(void **head, void *newElement)
 {
-    if (*head == NULL)
+    if (isListEmpty(*head))
+    {
+        *head = newElement;
+        return;
+    }
+
+    (*setPointerFieldFunc)(newElement, *head);
+
+    *head = newElement;
+}
+
+void addLast(void **head, void *newElement)
+{
+    if (isListEmpty(*head))
     {
         *head = newElement;
         return;
@@ -37,9 +52,9 @@ void addToList(void **head, void *newElement)
     (*setPointerFieldFunc)(prev, newElement);
 }
 
-int deleteFromList(void **head, void *data)
+int deleteByCondition(void **head, void *data)
 {
-    if (*head == NULL)
+    if (isListEmpty(*head))
     {
         return 0;
     }
@@ -72,6 +87,46 @@ int deleteFromList(void **head, void *data)
     return 0;
 }
 
+int deleteFirst(void **head)
+{
+    if (isListEmpty(*head))
+    {
+        return 0;
+    }
+    
+    void *temp = *head;
+
+    void *nextElement = (*nextElementFunc)(*head);
+    *head = nextElement;
+
+    free(temp);
+
+    return 1;
+}
+
+int deleteLast(void **head)
+{
+    if (isListEmpty(*head))
+    {
+        return 0;
+    }
+
+    void *current = *head;
+    void *prev = *head;
+
+    while ((*nextElementFunc)(current) != NULL)
+    {
+        prev = current;
+        current = (*nextElementFunc)(current);
+    }
+
+    (*setPointerFieldFunc)(prev, NULL);
+    
+    free(current);
+
+    return 1;
+}
+
 void printList(void *head)
 {
     while (head != NULL)
@@ -79,4 +134,9 @@ void printList(void *head)
         (*printFunc)(head);
         head = (*nextElementFunc)(head);
     }
+}
+
+static int isListEmpty(void *head)
+{
+    return head == NULL ? 1 : 0;
 }

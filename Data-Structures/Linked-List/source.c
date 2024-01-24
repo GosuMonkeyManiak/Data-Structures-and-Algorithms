@@ -29,10 +29,13 @@ void main()
     do
     {
         printf("Count of elements: %d\n", countOfElements);
-        printf("1. Add new element to list\n");
-        printf("2. Delete element from list\n");
-        printf("3. Print the list\n");
-        printf("4. Exit\n");
+        printf("1. Add new element to end of list\n");
+        printf("2. Add new element to beginning of list\n");
+        printf("3. Delete element from end of list\n");
+        printf("4. Delete element from beginning of list\n");
+        printf("5. Delete element from list by condition\n");
+        printf("6. Print the list\n");
+        printf("7. Exit\n");
 
         ReadingOpeationNumber:
         scanf("%d", &buffer);
@@ -40,24 +43,59 @@ void main()
         switch (buffer)
         {
             case 1:
-                int elementValueToAdd;
+                int elementValueToAddLast;
                 printf("Enter element value: ");
-                scanf("%d", &elementValueToAdd);
+                scanf("%d", &elementValueToAddLast);
 
-                Node *newElement = (Node *) malloc(sizeof(Node));
-                newElement -> next = NULL;
-                newElement -> value = elementValueToAdd;
+                Node *newElementLast = (Node *) malloc(sizeof(Node));
+                newElementLast -> next = NULL;
+                newElementLast -> value = elementValueToAddLast;
 
-                addToList(&head, newElement);
+                addLast(&head, newElementLast);
                 countOfElements++;
                 break;
 
             case 2:
+                int elementValueToAddFirst;
+                printf("Enter element value: ");
+                scanf("%d", &elementValueToAddFirst);
+
+                Node *newElementFirst = (Node *) malloc(sizeof(Node));
+                newElementFirst -> next = NULL;
+                newElementFirst -> value = elementValueToAddFirst;
+
+                addFirst(&head, newElementFirst);
+                countOfElements++;
+                break;
+
+            case 3:
+                if (deleteLast(&head))
+                {
+                    countOfElements--;
+                }
+                else
+                {
+                    printf("Something went wrong!");
+                }
+                break;
+
+            case 4:
+                if (deleteFirst(&head))
+                {
+                    countOfElements--;
+                }
+                else
+                {
+                    printf("Something went wrong!");
+                }
+                break;
+
+            case 5:
                 int elementValueToDelete;
                 printf("Enter element value: ");
                 scanf("%d", &elementValueToDelete);
 
-                if (deleteFromList(&head, &elementValueToDelete))
+                if (deleteByCondition(&head, &elementValueToDelete))
                 {
                     countOfElements--;
                 }
@@ -67,13 +105,13 @@ void main()
                 }
                 break;
 
-            case 3:
+            case 6:
                 printList(head);
                 printf("\n");
                 break;
         }
 
-    } while (buffer != 4);
+    } while (buffer != 7);
     
 
     freeList(head);
