@@ -8,7 +8,7 @@ static void (*setPointerFieldFunc)(void *currentElement, void *newElement);
 static int (*deleteConditionFunc)(void *currentElement, void *data);
 static void (*printFunc)(void *currentElement);
 
-void config(void * (*_nextElementFunc)(void *currentElement),
+void configList(void * (*_nextElementFunc)(void *currentElement),
             void (*_setPointerFieldFunc)(void *currentElement, void *newElement),
             int (*_deleteConditionFunc)(void *currentElement, void *data),
             void (*_printFunc)(void *currentElement))

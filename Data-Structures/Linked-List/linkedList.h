@@ -1,4 +1,4 @@
-extern void config(void * (*_nextElementFunc)(void *currentElement), 
+extern void configList(void * (*_nextElementFunc)(void *currentElement), 
                    void (*_setPointerFieldFunc)(void *currentElement, void *newElement),
                    int (*_deleteConditionFunc)(void *currentElement, void *data),
                    void (*_printFunc)(void *currentElement));

@@ -20,7 +20,7 @@ void freeList(Node *head);
 
 void main()
 {
-    config(nextElement, setPointer, deleteCondition, printElement);
+    configList(nextElement, setPointer, deleteCondition, printElement);
 
     Node *head = NULL;
     int buffer;
