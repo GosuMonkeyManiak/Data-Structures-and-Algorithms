@@ -1,4 +1,5 @@
 #include "linkedList.h"
+
 #include <stdlib.h>
 
 static int isListEmpty(void *head);
@@ -8,10 +9,10 @@ static void (*setPointerFieldFunc)(void *currentElement, void *newElement);
 static int (*deleteConditionFunc)(void *currentElement, void *data);
 static void (*printFunc)(void *currentElement);
 
-void configList(void * (*_nextElementFunc)(void *currentElement),
-            void (*_setPointerFieldFunc)(void *currentElement, void *newElement),
-            int (*_deleteConditionFunc)(void *currentElement, void *data),
-            void (*_printFunc)(void *currentElement))
+void configList(void * (*_nextElementFunc)(void *),
+                void (*_setPointerFieldFunc)(void *, void *),
+                int (*_deleteConditionFunc)(void *, void *),
+                void (*_printFunc)(void *))
 {
     nextElementFunc = _nextElementFunc;
     setPointerFieldFunc = _setPointerFieldFunc;
@@ -27,7 +28,7 @@ void addFirst(void **head, void *newElement)
         return;
     }
 
-    (*setPointerFieldFunc)(newElement, *head);
+    setPointerFieldFunc(newElement, *head);
 
     *head = newElement;
 }
@@ -46,10 +47,10 @@ void addLast(void **head, void *newElement)
     while (current != NULL)
     {
         prev = current;
-        current = (*nextElementFunc)(current);
+        current = nextElementFunc(current);
     }
     
-    (*setPointerFieldFunc)(prev, newElement);
+    setPointerFieldFunc(prev, newElement);
 }
 
 int deleteByCondition(void **head, void *data)
@@ -64,16 +65,16 @@ int deleteByCondition(void **head, void *data)
 
     while (current != NULL)
     {
-        if ((*deleteConditionFunc)(current, data))
+        if (deleteConditionFunc(current, data))
         {
             if (current == prev)
             {
-                *head = (*nextElementFunc)(current);
+                *head = nextElementFunc(current);
                 free(current);
             }
             else
             {
-                (*setPointerFieldFunc)(prev, (*nextElementFunc)(current));
+                setPointerFieldFunc(prev, nextElementFunc(current));
                 free(current);
             }
             
@@ -81,7 +82,7 @@ int deleteByCondition(void **head, void *data)
         }
 
         prev = current;
-        current = (*nextElementFunc)(current);
+        current = nextElementFunc(current);
     }
 
     return 0;
@@ -96,7 +97,7 @@ int deleteFirst(void **head)
     
     void *temp = *head;
 
-    void *nextElement = (*nextElementFunc)(*head);
+    void *nextElement = nextElementFunc(*head);
     *head = nextElement;
 
     free(temp);
@@ -114,13 +115,13 @@ int deleteLast(void **head)
     void *current = *head;
     void *prev = *head;
 
-    while ((*nextElementFunc)(current) != NULL)
+    while (nextElementFunc(current) != NULL)
     {
         prev = current;
-        current = (*nextElementFunc)(current);
+        current = nextElementFunc(current);
     }
 
-    (*setPointerFieldFunc)(prev, NULL);
+    setPointerFieldFunc(prev, NULL);
     
     free(current);
 
@@ -131,8 +132,8 @@ void printList(void *head)
 {
     while (head != NULL)
     {
-        (*printFunc)(head);
-        head = (*nextElementFunc)(head);
+        printFunc(head);
+        head = nextElementFunc(head);
     }
 }
 
